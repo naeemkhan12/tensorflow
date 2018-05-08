@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM nvidia/cuda:8.0-cudnn5-devel
 
 MAINTAINER Craig Citro <craigcitro@google.com>
 
@@ -29,6 +29,10 @@ RUN pip --no-cache-dir install \
         matplotlib \
         numpy \
         scipy \
+	scikit-learn \
+	pillow \
+	h5py \
+	keras \
         && \
     python -m ipykernel.kernelspec
 
@@ -40,9 +44,9 @@ ENV TENSORFLOW_VERSION 0.11.0
 # RUN pip --no-cache-dir install /_PIP_FILE_
 # RUN rm -f /_PIP_FILE_
 
-# Install TensorFlow CPU version from central repo
+# Install TensorFlow GPU version.
 RUN pip --no-cache-dir install \
-    http://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
+    http://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
 # --- ~ DO NOT EDIT OR DELETE BETWEEN THE LINES --- #
 
 # Set up our notebook config.
@@ -60,7 +64,7 @@ COPY run_jupyter.sh /
 EXPOSE 6006
 # IPython
 EXPOSE 8888
-
+ADD keras.json ~/.keras/keras.json
 WORKDIR "/notebooks"
 
-CMD ["/run_jupyter.sh"]
+CMD ["/run_jupyter.sh","--allow-root"]
