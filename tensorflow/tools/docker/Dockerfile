@@ -1,5 +1,4 @@
-FROM ubuntu:16.04
-
+FROM nvidia/cuda:8.0-cudnn5-devel
 LABEL maintainer="Craig Citro <craigcitro@google.com>"
 
 # Pick up some TF dependencies
@@ -34,6 +33,10 @@ RUN pip --no-cache-dir install \
         pandas \
         scipy \
         sklearn \
+	scikit-learn \
+	pillow \
+	h5py \
+	keras \
         && \
     python -m ipykernel.kernelspec
 
@@ -43,9 +46,9 @@ RUN pip --no-cache-dir install \
 # RUN pip --no-cache-dir install /_PIP_FILE_
 # RUN rm -f /_PIP_FILE_
 
-# Install TensorFlow CPU version from central repo
+# Install TensorFlow GPU version.
 RUN pip --no-cache-dir install \
-    http://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.0.0-cp27-none-linux_x86_64.whl
+    http://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
 # --- ~ DO NOT EDIT OR DELETE BETWEEN THE LINES --- #
 
 # RUN ln -s -f /usr/bin/python3 /usr/bin/python#
@@ -65,7 +68,6 @@ COPY run_jupyter.sh /
 EXPOSE 6006
 # IPython
 EXPOSE 8888
-
+ADD keras.json ~/.keras/keras.json
 WORKDIR "/notebooks"
-
-CMD ["/run_jupyter.sh", "--allow-root"]
+CMD ["/run_jupyter.sh","--allow-root"]

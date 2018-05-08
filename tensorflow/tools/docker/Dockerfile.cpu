@@ -1,5 +1,4 @@
-FROM nvidia/cuda:9.0-base-ubuntu16.04
-
+FROM ubuntu:14.04
 LABEL maintainer="Craig Citro <craigcitro@google.com>"
 
 # Pick up some TF dependencies
@@ -50,9 +49,9 @@ RUN pip --no-cache-dir install \
 # RUN pip --no-cache-dir install /_PIP_FILE_
 # RUN rm -f /_PIP_FILE_
 
-# Install TensorFlow GPU version.
+# Install TensorFlow CPU version from central repo
 RUN pip --no-cache-dir install \
-    http://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-0.0.0-cp27-none-linux_x86_64.whl
+    http://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
 # --- ~ DO NOT EDIT OR DELETE BETWEEN THE LINES --- #
 
 # RUN ln -s -f /usr/bin/python3 /usr/bin/python#
