@@ -1,6 +1,5 @@
 FROM nvidia/cuda:8.0-cudnn5-devel
 LABEL maintainer="Craig Citro <craigcitro@google.com>"
-
 # Pick up some TF dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
@@ -47,6 +46,7 @@ RUN pip --no-cache-dir install \
 # RUN rm -f /_PIP_FILE_
 
 # Install TensorFlow GPU version.
+ENV TENSORFLOW_VERSION 0.11.0
 RUN pip --no-cache-dir install \
     http://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
 # --- ~ DO NOT EDIT OR DELETE BETWEEN THE LINES --- #
@@ -62,12 +62,10 @@ COPY notebooks /notebooks
 # Jupyter has issues with being run directly:
 #   https://github.com/ipython/ipython/issues/7062
 # We just add a little wrapper script.
-COPY run_jupyter.sh /
-
 # TensorBoard
 EXPOSE 6006
 # IPython
 EXPOSE 8888
 ADD keras.json ~/.keras/keras.json
 WORKDIR "/notebooks"
-CMD ["/run_jupyter.sh","--allow-root"]
+CMD ["jupyter","notebook","--allow-root","--NotebookApp.token=''"]
